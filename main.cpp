@@ -26,6 +26,7 @@
 #include "examples.h"
 #include "DataParser.h"
 #include "datahandler.h"
+#include "svmclassifier.h"
 #include <map>
 #include <list>
 #include <iterator>
@@ -190,48 +191,8 @@ int main(int argc, char **argv)
         //  SVM Classifier
         //  Requiremets: 1D matrix describing the image (it may be its hitogram descriptor)
         //  - http://stackoverflow.com/questions/14694810/using-opencv-and-svm-with-images
-        if(true)
-        {
-            //  1) Initializing the training matrix
-            int num_files = 1500;  // TO_DO -> Has to check the folder again through a for loop
-            int descLenght = dictionarySize;
-            Mat trainingSVM_mat = trainingDescriptors;
-            //  2) Store descriptors at trainingSVM_mat (1 new descriptor per row)
-            //  and set the labelSVM_mat (class) - each row has the class for the descriptor
-            //trainingSVM_mat.row(0) = newDescriptors;
-            cout<<"trainingSVM_mat size is: "<<trainingSVM_mat.size()<<endl;
-
-            //Mat labelsSVM_mat(num_files,1,CV_32FC1);
-            Mat labelsSVM_mat = trainingLabels;
-
-            //  3) Set SVM parameters (for kernel separation - instead of 2d separation line)
-            CvSVMParams params = CvSVMParams();
-            params.svm_type = CvSVM::C_SVC;
-            params.kernel_type = CvSVM::RBF; //CvSVM::RBF, CvSVM::LINEAR ...
-            params.degree = 0; // for poly
-            params.gamma = 3; // for poly/rbf/sigmoid
-            params.coef0 = 0; // for poly/sigmoid
-
-            params.C = 7; // for CV_SVM_C_SVC, CV_SVM_EPS_SVR and CV_SVM_NU_SVR
-            params.nu = 0.0; // for CV_SVM_NU_SVC, CV_SVM_ONE_CLASS, and CV_SVM_NU_SVR
-            params.p = 0.0; // for CV_SVM_EPS_SVR
-
-            params.class_weights = NULL; // for CV_SVM_C_SVC
-            params.term_crit.type = CV_TERMCRIT_ITER +CV_TERMCRIT_EPS;
-            params.term_crit.max_iter = 1000;
-            params.term_crit.epsilon = 1e-6;
-
-            //  4) Creating SVM and training data if true ; load data if false
-            CvSVM svm;
-            if(true)
-            {
-                svm.train(trainingSVM_mat, labelsSVM_mat, Mat(), Mat(), params);
-                svm.save("../output/svm_filename"); // saving
-            } else if(false)
-            {
-                svm.load("../output/svm_filename"); // loading
-            }
-
+        SvmClassifier svm;  // to load the previus trained classfier
+        //SvmClassifier svm(trainingDescriptors,trainingLabels);
             //  Testing File
             cout<<endl;
             int classe = 0;
