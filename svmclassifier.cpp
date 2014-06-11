@@ -45,7 +45,7 @@ SvmClassifier::SvmClassifier(cv::Mat &trainingData, cv::Mat &trainingLabels)
  * @return
  * the predicted class considering the labels
  */
-float SvmClassifier::predict(cv::Mat &descriptors)
+float SvmClassifier::predict(cv::Mat &descriptors) const
 {
     return m_svm->predict(descriptors);
 }

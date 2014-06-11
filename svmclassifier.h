@@ -10,7 +10,7 @@ public:
     SvmClassifier();
     SvmClassifier(cv::Mat& trainingData, cv::Mat& trainingLabels);
 
-    float predict(cv::Mat& descriptors);
+    float predict(cv::Mat& descriptors) const;
 private:
     CvSVMParams getCvSVMParams();
 
