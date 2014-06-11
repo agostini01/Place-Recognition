@@ -199,57 +199,114 @@ int main(int argc, char **argv)
             int predicted = 0;
             int total=0;
             int corrected =0;
-            for (auto it = testClassAndFiles.begin(); it != testClassAndFiles.end(); ++it)
-            {
-                std::cout<<std::endl<<"Testing category: "<<it->first<<std::endl;
-                std::string pathToCategory;
-                pathToCategory.clear();
-                pathToCategory.append("../data/test/");
-                pathToCategory.append(it->first);
-                int i=1;
-                for (auto it2 = it->second.begin(); it2 != it->second.end(); ++it2)
-                {
-                    imgToAdd = imread(makePathToImage(pathToCategory, *it2));
-                    featureDetector->detect(imgToAdd,imgKeypoints);
-                    bowExtractor->compute(imgToAdd, imgKeypoints, newDescriptors,
-                            &pointIdxsOfClusters, &descriptors);
-                    predicted = svm.predict(newDescriptors);
 
-                    cout<<">> \t";
-                    if(i%5)
+            if(true)
+            {
+                for (int i = 0; i < trainingDescriptors.rows; ++i)
+                {
+                    newDescriptors = trainingDescriptors.row(i);
+                    predicted = svm.predict(newDescriptors);
+                    // CANT RECOGNIZE AS A MAT from the proper format
+                    // TO DO
+
+//                    cout<<">> \t";
+                    if(!(i%100))
                     {
-                        cout<<predicted;
-                        if (predicted == classe)
-                        {
-                            cout<<"*\t";
-                            ++corrected;
-                        }
-                        else
-                            cout<<"\t";
+                        if(i!=0)
+                            cout<<"\nAccuracy: "<<(float)corrected/total<<endl;
+                        cout<<"\n\nClass "<<trainingLabels.at<float>(i)<<"\n";
+                    }
+                    if(!(i%5)&& i!=0)
+                    {
+                        cout<<"\n";
+                    }
+                    cout<<predicted;
+                    if (predicted == trainingLabels.at<float>(i))
+                    {
+                        cout<<"*\t";
+                        ++corrected;
                     }
                     else
+                        cout<<"\t";
+
+//                    if(i!=0 && i%100)
+//                    {
+//                        if (predicted == trainingLabels.at<float>(i))
+//                        {
+//                            cout<<"* ";
+//                            ++corrected;
+//                        }
+//                        else
+//                            cout<<" ";
+//                    }
+//                    else
+//                    {
+//                        if (predicted == trainingLabels.at<float>(i))
+//                        {
+//                            cout<<"*\n\n";
+//                            ++corrected;
+//                        }
+//                        else
+//                            cout<<"\n\n";
+//                    }
+                    ++total;
+                }
+                cout<<endl<<"Total accuracy: "<<(float)corrected/total<<endl;
+                ++classe;
+            }else
+            {
+                for (auto it = testClassAndFiles.begin(); it != testClassAndFiles.end(); ++it)
+                {
+                    std::cout<<std::endl<<"Testing category: "<<it->first<<std::endl;
+                    std::string pathToCategory;
+                    pathToCategory.clear();
+                    pathToCategory.append("../data/test/");
+                    pathToCategory.append(it->first);
+                    int i=1;
+                    for (auto it2 = it->second.begin(); it2 != it->second.end(); ++it2)
                     {
-                        cout<<predicted;
-                        if (predicted == classe)
+                        imgToAdd = imread(makePathToImage(pathToCategory, *it2));
+                        featureDetector->detect(imgToAdd,imgKeypoints);
+                        bowExtractor->compute(imgToAdd, imgKeypoints, newDescriptors,
+                                &pointIdxsOfClusters, &descriptors);
+                        predicted = svm.predict(newDescriptors);
+
+                        cout<<">> \t";
+                        if(i%5)
                         {
-                            cout<<"*\n";
-                            ++corrected;
+                            cout<<predicted;
+                            if (predicted == classe)
+                            {
+                                cout<<"*\t";
+                                ++corrected;
+                            }
+                            else
+                                cout<<"\t";
                         }
                         else
-                            cout<<"\n";
+                        {
+                            cout<<predicted;
+                            if (predicted == classe)
+                            {
+                                cout<<"*\n";
+                                ++corrected;
+                            }
+                            else
+                                cout<<"\n";
+                        }
+                        ++total;
+                        ++i;
                     }
-                    ++total;
-                    ++i;
+                    cout<<"accuracy: "<<(float)corrected/total<<endl<<endl;
+                    ++classe;
                 }
-                cout<<"accuracy: "<<(float)corrected/total<<endl<<endl;
-                ++classe;
-            }
+
+                parser.writeMatToFile(newDescriptors,"../output/cvNewDescriptors.xml");
+                parser.histogramPlot("../output/cvNewDescriptors.xml");
+                delete imgPointer;
         }
-        parser.writeMatToFile(newDescriptors,"../output/cvNewDescriptors.xml");
-        parser.histogramPlot("../output/cvNewDescriptors.xml");
 
+            }
 
-        delete imgPointer;
-    }
-	return 0;
+    return 0;
 }
