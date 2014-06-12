@@ -37,6 +37,36 @@ SvmClassifier::SvmClassifier(cv::Mat &trainingData, cv::Mat &trainingLabels)
     m_svm->save("../output/svm_filename");
 }
 
+SvmClassifier::SvmClassifier(const FoldsExtraction &myFolds, const unsigned int &foldToNotInclude)
+{
+    cv::Mat trainingSVM_mat;
+    cv::Mat labelsSVM_mat;
+
+    unsigned int count =0;
+    for(auto it = myFolds.getFolds().begin(); it != myFolds.getFolds().end(); ++it)
+    {
+        if((it) != (it+foldToNotInclude)) // if it is not the test fold
+        {
+            for(auto it2 = it->getFold().begin(); it2 != it->getFold().end(); ++it2)
+            {
+                trainingSVM_mat.row(count) = it2->first;
+                labelsSVM_mat.row(count) = it2->second;
+            }
+        }
+    }
+
+    //  2) Set SVM parameters (for kernel separation - instead of 2d separation line)
+    CvSVMParams params = getCvSVMParams();
+
+    //  3) Training SVM classifier
+    m_svm->train(trainingSVM_mat, labelsSVM_mat, cv::Mat(), cv::Mat(), params);
+
+    //  4) Saving Classfier for further usage
+    std::string outputPath = "../output/svm_filename";
+    outputPath.append(std::to_string(foldToNotInclude));
+    m_svm->save(outputPath.c_str());
+}
+
 /**
  * @brief SvmClassifier::predict
  * Interface for OPENCV'cvSVM.predict() method
@@ -56,7 +86,7 @@ float SvmClassifier::predict(cv::Mat &descriptors) const
  * @return
  * CvSVMParams class with tunned values
  */
-CvSVMParams SvmClassifier::getCvSVMParams()
+CvSVMParams SvmClassifier::getCvSVMParams() const
 {
     CvSVMParams params = CvSVMParams();
     params.svm_type = CvSVM::C_SVC;

@@ -21,7 +21,9 @@ SOURCES += main.cpp \
     examples.cpp \
     datahandler.cpp \
     bayesExample.cpp \
-    svmclassifier.cpp
+    svmclassifier.cpp \
+    foldsextraction.cpp \
+    fold.cpp
 
 HEADERS += \
     BowVocabulary.h \
@@ -30,9 +32,11 @@ HEADERS += \
     examples.h \
     tinydir.h \
     datahandler.h \
-    svmclassifier.h
+    svmclassifier.h \
+    foldsextraction.h \
+    fold.h
 
-QMAKE_CXXFLAGS += -std=c++0x
+QMAKE_CXXFLAGS += -std=c++11
 
 INCLUDEPATH += /usr/local/include/opencv \
     /usr/include/boost
