@@ -23,7 +23,7 @@ class FoldsExtraction
 {
 public:
     FoldsExtraction(const cv::Mat &imageDescriptors,
-                    const cv::Mat &imageDescriptorsClasses,
+                    const cv::Mat &imageLabels,
                     const unsigned int &getNumberOfDifferentClasses);
 
     std::vector<Fold> getFolds() const;

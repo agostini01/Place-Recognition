@@ -10,9 +10,10 @@ class SvmClassifier
 public:
     SvmClassifier();
     SvmClassifier(cv::Mat& trainingData, cv::Mat& trainingLabels);
-    SvmClassifier(const FoldsExtraction &myFolds, const unsigned int &foldToNotInclude);
+    SvmClassifier(FoldsExtraction &myFolds, const unsigned int &foldToNotInclude);
+    SvmClassifier(FoldsExtraction &myFolds);
 
-    float predict(cv::Mat& descriptors) const;
+    float predict(cv::Mat& descriptor) const;
 private:
     CvSVMParams getCvSVMParams() const;
 

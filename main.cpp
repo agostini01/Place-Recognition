@@ -27,6 +27,7 @@
 #include "DataParser.h"
 #include "datahandler.h"
 #include "foldsextraction.h"
+#include "crossvalidation.h"
 #include "svmclassifier.h"
 #include <map>
 #include <list>
@@ -188,23 +189,63 @@ int main(int argc, char **argv)
                     << " is: " << trainingDescriptors.size() << std::endl;
         }
 
-
-        // Cross Validation Rotine
-        unsigned int numberOfClasses = 10;
-        FoldsExtraction my10Folds = FoldsExtraction(trainingDescriptors, trainingLabels, numberOfClasses);
-
-
-        // Cross Validation SVM
-        SvmClassifier svm(my10Folds, 2);
+//        // Cross Validation Rotine
+//        unsigned int numberOfClasses = 10;
+//        FoldsExtraction my10Folds = FoldsExtraction(trainingDescriptors, trainingLabels, numberOfClasses);
 
 
-        if(false)
+//        // Cross Validation SVM
+//        CrossValidation myCrossValidation(my10Folds);
+//        std::cout<<"Startin SVM crossvalidaion"<<std::endl;
+//        myCrossValidation.crossValidadeSVM();
+
+
+
+        if(true)
         {
+            std::vector<int> indices;
+            for(int i=0; i<trainingLabels.rows; ++i)
+            {
+                indices.push_back(i);
+            }
+            std::random_device device;
+            std::mt19937 generator(device());
+            std::shuffle(indices.begin(), indices.end(), generator);
+
+            cv::Mat trainingDescriptorsShuffled(
+                trainingDescriptors.rows,
+                trainingDescriptors.cols,
+                CV_32FC1
+            );
+            cv::Mat trainingLabelsShuffled(
+                trainingLabels.rows,
+                trainingLabels.cols,
+                CV_32FC1
+            );
+
+//            for(int i=0; i<static_cast<int>(indices.size()); ++i)
+//            {
+//                trainingDescriptorsShuffled.row(i) = trainingDescriptors.row(indices[i]);
+//                trainingLabelsShuffled.at<float>(i) = trainingLabels.at<float>(indices[i]);
+//            }
+
+            for(int i=0; i<trainingDescriptors.rows; ++i)
+            {
+                for(int j=0; j<trainingDescriptors.cols; ++j)
+                {
+                    trainingDescriptorsShuffled.at<float>(i, j) = trainingDescriptors.at<float>(indices[i], j);
+                }
+                trainingLabelsShuffled.at<float>(i) = trainingLabels.at<float>(indices[i]);
+            }
+
             //  SVM Classifier
             //  Requiremets: 1D matrix describing the image (it may be its hitogram descriptor)
             //  - http://stackoverflow.com/questions/14694810/using-opencv-and-svm-with-images
-            SvmClassifier svm;  // to load the previus trained classfier
+//            SvmClassifier svm;  // to load the previus trained classfier
             //SvmClassifier svm(trainingDescriptors,trainingLabels);
+            SvmClassifier svm(trainingDescriptorsShuffled, trainingLabelsShuffled);
+            std::cout << trainingDescriptorsShuffled.rows << " " << trainingDescriptorsShuffled.cols << " | "
+                      << trainingLabelsShuffled.rows << " " << trainingLabelsShuffled.cols << std::endl;
                 //  Testing File
                 std::cout<<std::endl;
                 int classe = 0;

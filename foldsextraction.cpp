@@ -1,7 +1,7 @@
 #include "foldsextraction.h"
 
 FoldsExtraction::FoldsExtraction(const cv::Mat &imageDescriptors,
-                                 const cv::Mat &imageDescriptorsClasses,
+                                 const cv::Mat &imageLabels,
                                  const unsigned int &numberOfDifferentClasses)
     :   m_numberOfDifferentClasses(numberOfDifferentClasses)
     ,   m_foldsSize(imageDescriptors.rows/10)
@@ -11,7 +11,7 @@ FoldsExtraction::FoldsExtraction(const cv::Mat &imageDescriptors,
     std::vector<std::pair<cv::Mat, unsigned int>> files;
     for (int i = 0; i < imageDescriptors.rows; ++i)
     {
-        files.push_back(std::make_pair(imageDescriptors.row(i), imageDescriptorsClasses.at<float>(i)));
+        files.push_back(std::make_pair(imageDescriptors.row(i), imageLabels.at<float>(i)));
     }
 
 
@@ -19,8 +19,10 @@ FoldsExtraction::FoldsExtraction(const cv::Mat &imageDescriptors,
     srand (time(NULL));
     while (!files.empty())
     {
+
+
         Fold aFold;
-        for (unsigned int i = 0; i < m_foldsSize; ++i)
+        for (unsigned int i = 0; i != m_foldsSize; ++i)
         {
             auto it = files.begin();
             int randomAccess = rand()%files.size();
@@ -30,7 +32,6 @@ FoldsExtraction::FoldsExtraction(const cv::Mat &imageDescriptors,
 
         m_folds.push_back(aFold);
     }
-    std::cout<<m_folds.size()<<std::endl;
 }
 std::vector<Fold> FoldsExtraction::getFolds() const
 {
@@ -41,4 +42,25 @@ void FoldsExtraction::setFolds(const std::vector<Fold> &folds)
 {
     m_folds = folds;
 }
+unsigned int FoldsExtraction::getNumberOfDifferentClasses() const
+{
+    return m_numberOfDifferentClasses;
+}
+unsigned int FoldsExtraction::getFoldsSize() const
+{
+    return m_foldsSize;
+}
+
+unsigned int FoldsExtraction::getNumberOfFeatures() const
+{
+    return m_folds.at(0).getNumberOfFeatures();
+}
+
+unsigned int FoldsExtraction::getNumberOfDescriptors() const
+{
+    return m_foldsSize*10;
+}
+
+
+
 

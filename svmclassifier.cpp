@@ -32,25 +32,35 @@ SvmClassifier::SvmClassifier(cv::Mat &trainingData, cv::Mat &trainingLabels)
 
     //  3) Training SVM classifier
     m_svm->train(trainingSVM_mat, labelsSVM_mat, cv::Mat(), cv::Mat(), params);
-
+    std::cout<<"Training Done"<<std::endl;
     //  4) Saving Classfier for further usage
     m_svm->save("../output/svm_filename");
 }
 
-SvmClassifier::SvmClassifier(const FoldsExtraction &myFolds, const unsigned int &foldToNotInclude)
+/**
+ * @brief SvmClassifier::SvmClassifier
+ * Special Constructor to be used with cross Validation
+ * @param myFolds
+ * The 10 Folds in a single object
+ * @param foldToNotInclude
+ * The number of the fold we want to classify
+ */
+SvmClassifier::SvmClassifier(FoldsExtraction &myFolds, const unsigned int &foldToNotInclude)
+    :   m_svm(new CvSVM())
 {
-    cv::Mat trainingSVM_mat;
-    cv::Mat labelsSVM_mat;
+    cv::Mat trainingSVM_mat((myFolds.getNumberOfDescriptors()-myFolds.getNumberOfDescriptors()/10), myFolds.getNumberOfFeatures(), CV_32F);
+    cv::Mat labelsSVM_mat = cv::Mat::zeros((myFolds.getNumberOfDescriptors()-myFolds.getNumberOfDescriptors()/10),1,CV_32FC1);
 
-    unsigned int count =0;
-    for(auto it = myFolds.getFolds().begin(); it != myFolds.getFolds().end(); ++it)
+    unsigned int count =0; // To count how many descriptors are being added
+    for(auto it = myFolds.begin(); it != myFolds.end(); ++it)   // fold access
     {
-        if((it) != (it+foldToNotInclude)) // if it is not the test fold
+        if((it) != (myFolds.begin()+foldToNotInclude)) // if it is not the test fold
         {
-            for(auto it2 = it->getFold().begin(); it2 != it->getFold().end(); ++it2)
+            for(auto it2 = it->begin(); it2 != it->end(); ++it2)    // pair access
             {
-                trainingSVM_mat.row(count) = it2->first;
-                labelsSVM_mat.row(count) = it2->second;
+                trainingSVM_mat.row(count) = it2->first.row(0);
+                labelsSVM_mat.at<float>(count) = it2->second;
+                ++count;
             }
         }
     }
@@ -59,11 +69,53 @@ SvmClassifier::SvmClassifier(const FoldsExtraction &myFolds, const unsigned int 
     CvSVMParams params = getCvSVMParams();
 
     //  3) Training SVM classifier
+    for (int j = 0; j < labelsSVM_mat.rows; ++j)
+    {
+        std::cout<<labelsSVM_mat.row(j)<<std::endl;
+    }
+
     m_svm->train(trainingSVM_mat, labelsSVM_mat, cv::Mat(), cv::Mat(), params);
 
     //  4) Saving Classfier for further usage
-    std::string outputPath = "../output/svm_filename";
+    std::string outputPath = "../output/svm_crosvalidation_";
     outputPath.append(std::to_string(foldToNotInclude));
+    m_svm->save(outputPath.c_str());
+}
+
+SvmClassifier::SvmClassifier(FoldsExtraction &myFolds)
+    :   m_svm(new CvSVM())
+{
+    cv::Mat trainingSVM_mat(myFolds.getNumberOfDescriptors(), myFolds.getNumberOfFeatures(), CV_32F);
+    cv::Mat labelsSVM_mat = cv::Mat::zeros(myFolds.getNumberOfDescriptors(),1,CV_32FC1);
+
+    unsigned int count =0; // To count how many descriptors are being added
+    for(auto it = myFolds.begin(); it != myFolds.end(); ++it)   // fold access
+    {
+        if(true) // if it is not the test fold
+        {
+            for(auto it2 = it->begin(); it2 != it->end(); ++it2)    // pair access
+            {
+                trainingSVM_mat.row(count) = it2->first.row(0);
+                labelsSVM_mat.at<float>(count) = it2->second;
+                ++count;
+            }
+        }
+    }
+
+    //  2) Set SVM parameters (for kernel separation - instead of 2d separation line)
+    CvSVMParams params = getCvSVMParams();
+
+    //  3) Training SVM classifier
+    for (int j = 0; j < labelsSVM_mat.rows; ++j)
+    {
+        std::cout<<labelsSVM_mat.row(j)<<std::endl;
+    }
+
+    m_svm->train(trainingSVM_mat, labelsSVM_mat, cv::Mat(), cv::Mat(), params);
+
+    //  4) Saving Classfier for further usage
+    std::string outputPath = "../output/svm_crosvalidation_";
+    outputPath.append(std::to_string(100));
     m_svm->save(outputPath.c_str());
 }
 
@@ -75,9 +127,9 @@ SvmClassifier::SvmClassifier(const FoldsExtraction &myFolds, const unsigned int 
  * @return
  * the predicted class considering the labels
  */
-float SvmClassifier::predict(cv::Mat &descriptors) const
+float SvmClassifier::predict(cv::Mat &descriptor) const
 {
-    return m_svm->predict(descriptors);
+    return m_svm->predict(descriptor);
 }
 
 /**

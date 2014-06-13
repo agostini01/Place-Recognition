@@ -9,13 +9,17 @@ class Fold
 {
 public:
     Fold();
-    Fold(const cv::Mat& imageDescriptors, const unsigned int& imageClass);
-
     std::vector<std::pair<cv::Mat, unsigned int> > getFold() const;
     void setTheFold(const std::vector<std::pair<cv::Mat, unsigned int> > &theFold);
     void pushBackImage(const cv::Mat& imageDescriptors, const unsigned int& imageClass);
     void pushBackImage(const std::pair<cv::Mat,unsigned int> &thePair);
     unsigned int size() const;
+
+    unsigned int getNumberOfFeatures() const;
+
+    typedef std::vector<std::pair<cv::Mat, unsigned int>>::iterator iterator;
+    iterator begin() { return m_theFold.begin(); }
+    iterator end() { return m_theFold.end(); }
 
 
 private:

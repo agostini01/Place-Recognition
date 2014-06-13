@@ -23,7 +23,8 @@ SOURCES += main.cpp \
     bayesExample.cpp \
     svmclassifier.cpp \
     foldsextraction.cpp \
-    fold.cpp
+    fold.cpp \
+    crossvalidation.cpp
 
 HEADERS += \
     BowVocabulary.h \
@@ -34,7 +35,8 @@ HEADERS += \
     datahandler.h \
     svmclassifier.h \
     foldsextraction.h \
-    fold.h
+    fold.h \
+    crossvalidation.h
 
 QMAKE_CXXFLAGS += -std=c++11
 

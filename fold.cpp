@@ -31,3 +31,8 @@ unsigned int Fold::size() const
     return m_theFold.size();
 }
 
+unsigned int Fold::getNumberOfFeatures() const
+{
+    return m_theFold.at(0).first.cols;
+}
+
