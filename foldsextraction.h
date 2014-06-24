@@ -23,7 +23,7 @@ class FoldsExtraction
 {
 public:
     FoldsExtraction(const cv::Mat &imageDescriptors,
-                    const cv::Mat &imageDescriptorsClasses,
+                    const cv::Mat &imageLabels,
                     const unsigned int &getNumberOfDifferentClasses);
 
     std::vector<Fold> getFolds() const;
@@ -59,8 +59,6 @@ private:
      * Will hold 10 different folds where crossvalidation may be performed
      */
     std::vector<Fold> m_folds;
-
-
 };
 
 #endif // FOLDSEXTRACTION_H

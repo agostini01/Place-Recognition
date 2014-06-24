@@ -5,6 +5,7 @@
 #include "svmclassifier.h"
 #include "engine.h"
 #include <vector>
+#include <iomanip>          //To display results
 
 /**
  * @brief The CrossValidation class
@@ -22,6 +23,9 @@ public:
 
 
 
+    void displayResults();
+    float getMeanAccuracy();
+    float getClassAccuracy(const int &classNumber) const;
 private:
     /**
      * @brief m_folds
@@ -31,10 +35,17 @@ private:
 
     /**
      * @brief m_results
-     * Is a vector of NxN matriz that holds results for each classification performed
+     * A NxN matriz that holds results for each classification performed
      * The corrected classfied are on the main  diagonal
      */
-    std::vector<cv::Mat> m_results;
+    cv::Mat m_results;
+
+    /**
+     * @brief m_accuracyVector
+     * Holds the accuracy for each fold
+     * Vector legth = number of folds
+     */
+    std::vector<float> m_accuracyVector;
 
 
 };

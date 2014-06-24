@@ -189,19 +189,20 @@ int main(int argc, char **argv)
                     << " is: " << trainingDescriptors.size() << std::endl;
         }
 
-//        // Cross Validation Rotine
-//        unsigned int numberOfClasses = 10;
-//        FoldsExtraction my10Folds = FoldsExtraction(trainingDescriptors, trainingLabels, numberOfClasses);
+        // Cross Validation Rotine
+        unsigned int numberOfClasses = 15;
+        FoldsExtraction my10Folds = FoldsExtraction(trainingDescriptors, trainingLabels, numberOfClasses);
 
 
-//        // Cross Validation SVM
-//        CrossValidation myCrossValidation(my10Folds);
-//        std::cout<<"Startin SVM crossvalidaion"<<std::endl;
-//        myCrossValidation.crossValidadeSVM();
+        // Cross Validation SVM
+        CrossValidation myCrossValidation(my10Folds);
+        std::cout<<"Startin SVM crossvalidaion"<<std::endl;
+        myCrossValidation.crossValidadeSVM();
+        myCrossValidation.displayResults();
 
 
 
-        if(true)
+        if(false)
         {
             std::vector<int> indices;
             for(int i=0; i<trainingLabels.rows; ++i)

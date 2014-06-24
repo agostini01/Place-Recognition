@@ -13,6 +13,18 @@ public:
     SvmClassifier(FoldsExtraction &myFolds, const unsigned int &foldToNotInclude);
     SvmClassifier(FoldsExtraction &myFolds);
 
+//    virtual ~SvmClassifier()
+//    {
+////        std::cout<<"Called destructor"<<std::endl;
+//        if(m_svm != nullptr)
+//        {
+////            std::cout<<"Deleting m_svm"<<std::endl;
+//            m_svm.delete_obj();
+//        }
+////        std::cout<<"Assigning m_svm to a nullptr"<<std::endl;
+//        m_svm = nullptr;
+//    }
+
     float predict(cv::Mat& descriptor) const;
 private:
     CvSVMParams getCvSVMParams() const;

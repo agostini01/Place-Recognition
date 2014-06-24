@@ -48,7 +48,8 @@ SvmClassifier::SvmClassifier(cv::Mat &trainingData, cv::Mat &trainingLabels)
 SvmClassifier::SvmClassifier(FoldsExtraction &myFolds, const unsigned int &foldToNotInclude)
     :   m_svm(new CvSVM())
 {
-    cv::Mat trainingSVM_mat((myFolds.getNumberOfDescriptors()-myFolds.getNumberOfDescriptors()/10), myFolds.getNumberOfFeatures(), CV_32F);
+    //  1) Adapting folds to SVM input (every descriptor in a single matrix)
+    cv::Mat trainingSVM_mat((myFolds.getNumberOfDescriptors()-myFolds.getNumberOfDescriptors()/10), myFolds.getNumberOfFeatures(), CV_32FC1);
     cv::Mat labelsSVM_mat = cv::Mat::zeros((myFolds.getNumberOfDescriptors()-myFolds.getNumberOfDescriptors()/10),1,CV_32FC1);
 
     unsigned int count =0; // To count how many descriptors are being added
@@ -58,7 +59,10 @@ SvmClassifier::SvmClassifier(FoldsExtraction &myFolds, const unsigned int &foldT
         {
             for(auto it2 = it->begin(); it2 != it->end(); ++it2)    // pair access
             {
-                trainingSVM_mat.row(count) = it2->first.row(0);
+                for (int i = 0; i < it2->first.cols; ++i)
+                {
+                    trainingSVM_mat.at<float>(count,i) = it2->first.at<float>(i);
+                }
                 labelsSVM_mat.at<float>(count) = it2->second;
                 ++count;
             }
@@ -69,11 +73,6 @@ SvmClassifier::SvmClassifier(FoldsExtraction &myFolds, const unsigned int &foldT
     CvSVMParams params = getCvSVMParams();
 
     //  3) Training SVM classifier
-    for (int j = 0; j < labelsSVM_mat.rows; ++j)
-    {
-        std::cout<<labelsSVM_mat.row(j)<<std::endl;
-    }
-
     m_svm->train(trainingSVM_mat, labelsSVM_mat, cv::Mat(), cv::Mat(), params);
 
     //  4) Saving Classfier for further usage
@@ -85,8 +84,9 @@ SvmClassifier::SvmClassifier(FoldsExtraction &myFolds, const unsigned int &foldT
 SvmClassifier::SvmClassifier(FoldsExtraction &myFolds)
     :   m_svm(new CvSVM())
 {
+    //  1) Adapting folds to SVM input (every descriptor in a single matrix)
     cv::Mat trainingSVM_mat(myFolds.getNumberOfDescriptors(), myFolds.getNumberOfFeatures(), CV_32F);
-    cv::Mat labelsSVM_mat = cv::Mat::zeros(myFolds.getNumberOfDescriptors(),1,CV_32FC1);
+    cv::Mat labelsSVM_mat(1,myFolds.getNumberOfDescriptors(),CV_32FC1);
 
     unsigned int count =0; // To count how many descriptors are being added
     for(auto it = myFolds.begin(); it != myFolds.end(); ++it)   // fold access
@@ -95,7 +95,10 @@ SvmClassifier::SvmClassifier(FoldsExtraction &myFolds)
         {
             for(auto it2 = it->begin(); it2 != it->end(); ++it2)    // pair access
             {
-                trainingSVM_mat.row(count) = it2->first.row(0);
+                for (int i = 0; i < it2->first.cols; ++i)
+                {
+                    trainingSVM_mat.at<float>(count,i) = it2->first.at<float>(i);
+                }
                 labelsSVM_mat.at<float>(count) = it2->second;
                 ++count;
             }
@@ -106,11 +109,6 @@ SvmClassifier::SvmClassifier(FoldsExtraction &myFolds)
     CvSVMParams params = getCvSVMParams();
 
     //  3) Training SVM classifier
-    for (int j = 0; j < labelsSVM_mat.rows; ++j)
-    {
-        std::cout<<labelsSVM_mat.row(j)<<std::endl;
-    }
-
     m_svm->train(trainingSVM_mat, labelsSVM_mat, cv::Mat(), cv::Mat(), params);
 
     //  4) Saving Classfier for further usage
