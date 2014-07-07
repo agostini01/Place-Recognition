@@ -37,6 +37,7 @@ public:
 	void bowExtractorExample(std::string path1,std::string path2);
 	void displayPrecedure(cv::Mat image);
     void tinydirExample();
+    void svmExample();
 };
 
 #endif /* EXAMPLES_H_ */

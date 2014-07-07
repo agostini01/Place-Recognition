@@ -306,6 +306,141 @@ void examples::tinydirExample()
     tinydir_close(&dir);
 }
 
+void examples::svmExample()
+{
+//    if(false)
+//    {
+//        std::vector<int> indices;
+//        for(int i=0; i<trainingLabels.rows; ++i)
+//        {
+//            indices.push_back(i);
+//        }
+//        std::random_device device;
+//        std::mt19937 generator(device());
+//        std::shuffle(indices.begin(), indices.end(), generator);
+
+//        cv::Mat trainingDescriptorsShuffled(
+//            trainingDescriptors.rows,
+//            trainingDescriptors.cols,
+//            CV_32FC1
+//        );
+//        cv::Mat trainingLabelsShuffled(
+//            trainingLabels.rows,
+//            trainingLabels.cols,
+//            CV_32FC1
+//        );
+
+////            for(int i=0; i<static_cast<int>(indices.size()); ++i)
+////            {
+////                trainingDescriptorsShuffled.row(i) = trainingDescriptors.row(indices[i]);
+////                trainingLabelsShuffled.at<float>(i) = trainingLabels.at<float>(indices[i]);
+////            }
+
+//        for(int i=0; i<trainingDescriptors.rows; ++i)
+//        {
+//            for(int j=0; j<trainingDescriptors.cols; ++j)
+//            {
+//                trainingDescriptorsShuffled.at<float>(i, j) = trainingDescriptors.at<float>(indices[i], j);
+//            }
+//            trainingLabelsShuffled.at<float>(i) = trainingLabels.at<float>(indices[i]);
+//        }
+
+//        //  SVM Classifier
+//        //  Requiremets: 1D matrix describing the image (it may be its hitogram descriptor)
+//        //  - http://stackoverflow.com/questions/14694810/using-opencv-and-svm-with-images
+////            SvmClassifier svm;  // to load the previus trained classfier
+//        //SvmClassifier svm(trainingDescriptors,trainingLabels);
+//        SvmClassifier svm(trainingDescriptorsShuffled, trainingLabelsShuffled);
+//        std::cout << trainingDescriptorsShuffled.rows << " " << trainingDescriptorsShuffled.cols << " | "
+//                  << trainingLabelsShuffled.rows << " " << trainingLabelsShuffled.cols << std::endl;
+//            //  Testing File
+//            std::cout<<std::endl;
+//            int classe = 0;
+//            int predicted = 0;
+//            int total=0;
+//            int corrected =0;
+
+//            if(true)
+//            {
+//                for (int i = 0; i < trainingDescriptors.rows; ++i)
+//                {
+//                    newDescriptors = trainingDescriptors.row(i);
+//                    predicted = svm.predict(newDescriptors);
+
+//                    if(!(i%100))
+//                    {
+//                        if(i!=0)
+//                            std::cout<<"\nAccuracy: "<<(float)corrected/total<<std::endl;
+//                        std::cout<<"\n\nClass "<<trainingLabels.at<float>(i)<<"\n";
+//                    }
+//                    if(!(i%5)&& i!=0)
+//                    {
+//                        std::cout<<"\n";
+//                    }
+//                    std::cout<<predicted;
+//                    if (predicted == trainingLabels.at<float>(i))
+//                    {
+//                        std::cout<<"*\t";
+//                        ++corrected;
+//                    }
+//                    else
+//                        std::cout<<"\t";
+//                    ++total;
+//                }
+//                std::cout<<std::endl<<"Total accuracy: "<<(float)corrected/total<<std::endl;
+//                ++classe;
+//            }else
+//            {
+//                for (auto it = testClassAndFiles.begin(); it != testClassAndFiles.end(); ++it)
+//                {
+//                    std::cout<<std::endl<<"Testing category: "<<it->first<<std::endl;
+//                    std::string pathToCategory;
+//                    pathToCategory.clear();
+//                    pathToCategory.append("../data/test/");
+//                    pathToCategory.append(it->first);
+//                    int i=1;
+//                    for (auto it2 = it->second.begin(); it2 != it->second.end(); ++it2)
+//                    {
+//                        imgToAdd = imread(makePathToImage(pathToCategory, *it2));
+//                        featureDetector->detect(imgToAdd,imgKeypoints);
+//                        bowExtractor->compute(imgToAdd, imgKeypoints, newDescriptors,
+//                                &pointIdxsOfClusters, &descriptors);
+//                        predicted = svm.predict(newDescriptors);
+
+//                        std::cout<<">> \t";
+//                        if(i%5)
+//                        {
+//                            std::cout<<predicted;
+//                            if (predicted == classe)
+//                            {
+//                                std::cout<<"*\t";
+//                                ++corrected;
+//                            }
+//                            else
+//                                std::cout<<"\t";
+//                        }
+//                        else
+//                        {
+//                            std::cout<<predicted;
+//                            if (predicted == classe)
+//                            {
+//                                std::cout<<"*\n";
+//                                ++corrected;
+//                            }
+//                            else
+//                                std::cout<<"\n";
+//                        }
+//                        ++total;
+//                        ++i;
+//                    }
+//                    std::cout<<"accuracy: "<<(float)corrected/total<<std::endl<<std::endl;
+//                    ++classe;
+//                }
+
+//        }
+//    }
+}
+
 /**
  * @function dysplayPrecedure
  */
