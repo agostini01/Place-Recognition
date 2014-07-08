@@ -219,9 +219,54 @@ int main(int argc, char **argv)
 
 
 
+    /**
+    * If True it executes video prediction through webcan
+    * If False do nothing
+    */
+    if(true)
+    {
+        // Check and open video feed
+        cv::VideoCapture videoFeed;
+        if (videoFeed.isOpened())
+        {
+            videoFeed.release();
+        }
+        videoFeed.open(0);
 
-//    parser.writeMatToFile(newDescriptors,"../output/cvNewDescriptors.xml");
-//    parser.histogramPlot("../output/cvNewDescriptors.xml");
+        //set height and width of capture frame
+        videoFeed.set(CV_CAP_PROP_FRAME_WIDTH, 640);
+        videoFeed.set(CV_CAP_PROP_FRAME_HEIGHT, 480);
+
+
+        std::cout<<"Performing new prediction"<<std::endl;
+        std::cout<<"Training new SVM Classifier"<<std::endl;
+        SvmClassifier mySvmClassifier(trainingDescriptors,trainingLabels);
+
+        std::cout<<"Starting video prediction..."<<std::endl;
+        std::cout<<"Press ESC on the new window to exit"<<std::endl;
+        cv::namedWindow("Prediction", CV_WINDOW_AUTOSIZE);
+        cv::Mat textImage = 255*cv::Mat::ones(50,400,CV_32F);
+        while(waitKey(60) != 1048603)
+        {
+            videoFeed.read(imgToAdd);
+            featureDetector->detect(imgToAdd,imgKeypoints);
+            bowExtractor->compute(imgToAdd, imgKeypoints, newDescriptors,
+                    &pointIdxsOfClusters, &descriptors);
+
+            // To write predicted class
+            textImage = 255*cv::Mat::ones(50,400,CV_32F);
+            cv::putText(textImage,"Predicted Class   " + std::to_string(mySvmClassifier.predict(newDescriptors) )
+                          ,cv::Point(10,30),100,1,0);
+
+            cv::imshow("Prediction",textImage);
+        }
+
+        if (videoFeed.isOpened())
+        {
+            videoFeed.release();
+        }
+    }
+
     delete imgPointer;
     return 0;
 }

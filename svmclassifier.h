@@ -25,6 +25,11 @@ public:
 //        m_svm = nullptr;
 //    }
 
+    /**
+     * @brief predict
+     * @param descriptor matching the svm train descriptor's size
+     * @return The prediced class for this descriptor
+     */
     float predict(cv::Mat& descriptor) const;
 private:
     CvSVMParams getCvSVMParams() const;

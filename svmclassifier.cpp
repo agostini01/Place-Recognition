@@ -34,7 +34,7 @@ SvmClassifier::SvmClassifier(cv::Mat &trainingData, cv::Mat &trainingLabels)
     m_svm->train(trainingSVM_mat, labelsSVM_mat, cv::Mat(), cv::Mat(), params);
     std::cout<<"Training Done"<<std::endl;
     //  4) Saving Classfier for further usage
-    m_svm->save("../output/svm_filename");
+    m_svm->save("../output/svm_classifier.xml");
 }
 
 /**
